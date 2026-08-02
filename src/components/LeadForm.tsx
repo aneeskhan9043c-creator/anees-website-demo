@@ -32,7 +32,7 @@ const SERVICES = ['Custom Website', 'n8n Automation', 'Google Maps SEO', 'Full P
 const BUDGETS = ['$300 - $500', '$500 - $1k', '$1,000+', 'Custom Budget'];
 const TIME_SLOTS = ['10:00 AM', '02:00 PM', '05:00 PM', '08:00 PM'];
 
-const WEBHOOK_URL = 'YOUR_N8N_WEBHOOK_URL'; // Replace with actual webhook
+
 
 export function LeadForm() {
   const [formData, setFormData] = useState<LeadFormData>(INITIAL_FORM_STATE);
@@ -89,20 +89,21 @@ export function LeadForm() {
     };
 
     try {
-      if (WEBHOOK_URL === 'YOUR_N8N_WEBHOOK_URL') {
-         await new Promise(resolve => setTimeout(resolve, 1500));
-         console.log('Form data that would be sent to webhook:', JSON.stringify(payload, null, 2));
-      } else {
-        const response = await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+      const messageText = `*New Strategy Call Booking*
 
-        if (!response.ok) throw new Error('Submission failed');
-      }
+*Name:* ${payload.fullName}
+*Email:* ${payload.email}
+*Phone:* ${payload.phone}
+*Service:* ${payload.service}
+*Budget:* ${payload.budget}
+*Preferred Date:* ${payload.preferredDate}
+*Time Slot:* ${payload.timeSlot}
+
+*Message:*
+${payload.message}`;
+
+      const whatsappUrl = `https://wa.me/923706980818?text=${encodeURIComponent(messageText)}`;
+      window.open(whatsappUrl, '_blank');
 
       setStatus('success');
       setFormData(INITIAL_FORM_STATE);
