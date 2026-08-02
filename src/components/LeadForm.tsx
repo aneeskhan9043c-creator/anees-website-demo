@@ -89,7 +89,11 @@ export function LeadForm() {
     };
 
     try {
-      const messageText = `*New Strategy Call Booking*
+     await fetch('https://aneeskhan9043c.app.n8n.cloud/webhook-test/inbound-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }); const messageText = `*New Strategy Call Booking*
 
 *Name:* ${payload.fullName}
 *Email:* ${payload.email}
