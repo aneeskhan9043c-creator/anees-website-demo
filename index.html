@@ -8,6 +8,72 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <!-- Anees AI Chatbot Widget -->
+<div id="anees-chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; font-family: Arial, sans-serif;">
+  <button id="chat-toggle-btn" onclick="toggleChat()" style="background: #0070f3; color: white; border: none; padding: 12px 18px; border-radius: 25px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+    💬 Chat with Us
+  </button>
+  
+  <div id="chat-box" style="display: none; width: 320px; height: 420px; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border: 1px solid #ccc; flex-direction: column; overflow: hidden; margin-top: 10px;">
+    <div style="background: #0070f3; color: white; padding: 12px; font-weight: bold; text-align: center;">
+      Anees AI Assistant
+    </div>
+    <div id="chat-messages" style="flex: 1; padding: 10px; overflow-y: auto; font-size: 14px; background: #f9f9f9;">
+      <div style="background: #e1f5fe; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; width: 85%;">
+        Hello! Looking for web dev, GBP ranking, or AI automation? Leave your query and contact info below!
+      </div>
+    </div>
+    <div style="padding: 10px; background: #fff; border-top: 1px solid #eee;">
+      <input type="text" id="user-name" placeholder="Your Name" style="width: 100%; margin-bottom: 5px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <input type="text" id="user-contact" placeholder="Email or Phone" style="width: 100%; margin-bottom: 5px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <textarea id="user-msg" placeholder="How can we help?" style="width: 100%; height: 50px; margin-bottom: 5px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></textarea>
+      <button onclick="sendWebLead()" style="width: 100%; background: #28a745; color: white; border: none; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer;">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleChat() {
+  const box = document.getElementById('chat-box');
+  box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function sendWebLead() {
+  const name = document.getElementById('user-name').value;
+  const contact = document.getElementById('user-contact').value;
+  const message = document.getElementById('user-msg').value;
+
+  if(!name || !contact || !message) {
+    alert('Please fill all fields');
+    return;
+  }
+
+  const WEBHOOK_URL = "https://aneeskhan9043c.app.n8n.cloud/webhook-test/inbound-lead";
+
+  const payload = {
+    source: "Website Chatbot",
+    client_name: name,
+    contact_info: contact,
+    message: message,
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    document.getElementById('chat-messages').innerHTML += `<div style="background: #e2e2e2; padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: right;">${message}</div>`;
+    
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    document.getElementById('chat-messages').innerHTML += `<div style="background: #d4edda; padding: 8px; border-radius: 8px; margin-bottom: 8px; color: #155724;">Thank you! Our AI engine has logged your request and sent a response.</div>`;
+    document.getElementById('user-msg').value = '';
+  } catch (err) {
+    console.error(err);
+    alert('Error sending message');
+  }
+}
+</script></body>
 </html>
 
